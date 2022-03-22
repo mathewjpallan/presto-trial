@@ -4,7 +4,7 @@
 
 Presto is a distributed SQL query engine for running interactive analytic queries against big data sources. Presto queries can run against HDFS, S3 and many other connectors. Connectors are the SPI exposed by Presto for data source providers to implement and this ia analogous to JDBC and drivers.
 
-### These are the steps to run presto on a mac to query data on S3 like FS. Minio is run to provide the S3 compatible FS. Presto also requires HIVE metastore to store metadata about the data on S3. 
+These are the steps to run presto on a mac to query data on S3 like FS. Minio is run to provide the S3 compatible FS. Presto also requires HIVE metastore to store metadata about the data on S3. 
 
 
 # 1. Install docker
