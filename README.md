@@ -139,6 +139,11 @@ Run the following commands on the prest-cli session
 WITH (FORMAT = 'CSV',
     EXTERNAL_LOCATION = 's3a://hive/data/csv')
 ;
-- select * from employeedata; //this should now show the csv data
+- select * from hive.testdata.employeedata; //this should now show the csv data
 
+### Try running the following commands to create a parquet table and copy data from the above employeedata table
+- CREATE SCHEMA testparq WITH (LOCATION = 's3a://hive/data/parq');
+- user testparq
+- CREATE TABLE hive.testparq.employeedata WITH (format = 'ORC', partitioned_by = ARRAY['dept']) AS SELECT eid, ename, address, dept FROM hive.testdata.employeedata;
 
+You can now see that there are new files created in minio fs by going to the minio console and there would be multiple files dependening on number of partitions in your data.
