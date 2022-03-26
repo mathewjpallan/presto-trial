@@ -7,9 +7,15 @@ Presto is a distributed SQL query engine for running interactive analytic querie
 These are the steps to run presto on a mac to query data on S3 like FS. Minio is run to provide the S3 compatible FS. Presto also requires HIVE metastore to store metadata about the data on S3. 
 
 
-# 1. Install docker
+# 1. Install docker & jdk8
 
-# 2. Install jdk8
+# 2. Run mysql on docker
+```
+Use a path on your local filesystem instead of /data/mysql8 in the command below so that mysql can persist data to disk
+
+docker run --rm --name mysql8 -e MYSQL_ROOT_PASSWORD=root -d -p 3306:3306 -v /data/mysql8:/var/lib/mysql mysql:8.0.28
+
+```
 
 # 3. Run minio on docker
 
@@ -73,8 +79,35 @@ Append the below xml snippet to hive-site.xml
   </property>
 
 
+Amend the following properties in hive-site.xml (Use root password only in dev environment)
+  <property>
+    <name>javax.jdo.option.ConnectionURL</name>
+    <value>jdbc:mysql://localhost:3306/hcatalog?createDatabaseIfNotExist=true</value>
+    <description>
+      JDBC connect string for a JDBC metastore.
+      To use SSL to encrypt/authenticate the connection, provide database-specific SSL flag in the connection URL.
+      For example, jdbc:postgresql://myhost/db?ssl=true for postgres database.
+    </description>
+  </property>
+  <property>
+    <name>javax.jdo.option.ConnectionDriverName</name>
+    <value>com.mysql.cj.jdbc.Driver</value>
+    <description>Driver class name for a JDBC metastore</description>
+  </property>
+  <property>
+    <name>javax.jdo.option.ConnectionUserName</name>
+    <value>root</value>
+    <description>Username to use against metastore database</description>
+  </property>
+  <property>
+    <name>javax.jdo.option.ConnectionPassword</name>
+    <value>root</value>
+    <description>password to use against metastore database</description>
+  </property>
+
 mkdir -p hcatalog/var/log/
-bin/schematool -dbType derby -initSchema
+//Initialse the metastoreDB in mysql by using the below command 
+bin/schematool --dbType mysql --initSchema
 hcatalog/sbin/hcat_server.sh start  
 
 The metastore should initialise successfully at this point 
@@ -106,6 +139,6 @@ Run the following commands on the prest-cli session
 WITH (FORMAT = 'CSV',
     EXTERNAL_LOCATION = 's3a://hive/data/csv')
 ;
-- select * from hive.testdata.employeedata; //this should now show the csv data
+- select * from employeedata; //this should now show the csv data
 
 
