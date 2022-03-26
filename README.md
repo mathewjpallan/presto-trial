@@ -90,7 +90,7 @@ Copy the contents of the prestconf to the etc directory
 Create a data folder on your local filesystem. Update the path to this data folder to the node.properties in the etc directory
 bin/launcher start
 Download presto-cli to the presto-server-0.271 directory and make it executable and then run the following command
-presto-cli --server <coordinate_node:port> --catalog hive
+./presto-cli.jar --server localhost:8080 --catalog hive
 ```
 
 # Query with Presto on presto-cli
